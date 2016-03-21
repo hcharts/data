@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Set the callback variable to what jQuery sends over
  */
@@ -10,10 +9,10 @@ if (!$callback) $callback = 'callback';
  * The $filename parameter determines what file to load from local source
  */
 $filename = $_GET['filename'];
-if (preg_match('/^[a-zA-Z]+[a-zA-Z\-\/\_\.]+\.json$/', $filename)) {
+if (preg_match('/^[a-zA-Z]+[a-zA-Z\d\-\/\_\.]+\.json$/', $filename)) {
 	$json = file_get_contents($filename);
 }
-if (preg_match('/^[a-zA-Z\-\.]+\.csv$/', $filename)) {
+if (preg_match('/^[a-zA-Z]+[a-zA-Z\d\-\/\_\.]+\.csv$/', $filename)) {
 	$csv = str_replace('"', '\"', file_get_contents($filename));
 	$csv = preg_replace( "/[\r\n]+/", "\\n", $csv);
 	$json = '"' . $csv . '"';

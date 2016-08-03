@@ -24,6 +24,12 @@ server.register(require('inert'), (err) => {
     server.route({
         method: 'GET',
         path: '/qrcode/{url}',
+	config: {
+	    state: {
+       	        parse: false, // parse and store in request.state
+        	failAction: 'ignore' // may also be 'ignore' or 'log'
+      	    }
+	},
         handler: function(request, reply) {
             const url = request.params.url,
                 md5Url = md5(url),

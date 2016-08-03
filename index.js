@@ -4,8 +4,9 @@ const Hapi = require('hapi');
 const QRCode = require('qrcode');
 const md5 = require('md5');
 const fs = require('fs');
-const config = require('./config.json');
+const Mock = require('mockjs');
 
+const config = require('./config.json');
 const server = new Hapi.Server();
 
 server.connection({
@@ -49,7 +50,7 @@ server.register(require('inert'), (err) => {
         method: 'GET',
         path: '/jsonp',
         handler: function(request, reply) {
-            var params = request.query,
+            const params = request.query,
                 json = {
                     code: 1,
                     msg: '参数错误'
@@ -63,29 +64,56 @@ server.register(require('inert'), (err) => {
                 params.callback = 'callback';
             }
 
-
             // static data file
             if (params.filename) {
 
                 if (/^[a-zA-Z]+[a-zA-Z\d\-\_\.\/]+\.json$/.test(params.filename)) {
-                    json = fs.readFileSync(config.datas + params.filename);
+                    json = fs.readFileSync(config.datas + params.filename).toString();
                 } else if (/^[a-zA-Z]+[a-zA-Z\d\-\_\.\/]+\.csv$/.test(params.filename)) {
-                    json = fs.readFileSync(config.datas + params.filename);
+                    json = fs.readFileSync(config.datas + params.filename).toString();
                     // replace all
-                    json = json.replace('"', '\"');
-                    json = json.replace(/[\r\n]+/, '\\n');
+                    json = json.replace(/\"/g, '\"');
+                    json = json.replace(/[\r\n]+/g, '\\n');
                     json = '"' + json + '"';
                 }
             }
+
 
             if (typeof json === 'object') {
                 json = JSON.stringify(json);
             }
 
-            reply(params.callback + '(' + json + ')');
+            reply(params.callback + '(' + json + ');').type('text/javascript');
 
         }
     });
+
+    // mock data
+    server.route({
+        method: 'GET',
+        path: '/mock/{template}',
+        handler: function(request, reply) {
+            const template = request.params.template;
+            const data = Mock.mock(JSON.parse(template));
+            reply(JSON.stringify(data)).type('application/json');
+        }
+    });
+
+    server.route({
+        method: 'POST',
+        path: '/mock',
+        handler: function(request, reply) {
+            const params = request.payload;
+            if (params && params.template) {
+                const data = Mock.mock(JSON.parse(params.template));
+                reply(JSON.stringify(data)).type('application/json');
+            } else {
+                reply('{code: 0, msg: "参数错误"}').type('application/json');
+            }
+        }
+    });
+
+
 
     server.start((err) => {
 

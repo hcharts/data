@@ -24,6 +24,12 @@ server.register(require('inert'), (err) => {
     server.route({
         method: 'GET',
         path: '/qrcode/{url}',
+        config: {
+            state: {
+                parse: false, // parse and store in request.state
+                failAction: 'ignore' // may also be 'ignore' or 'log'
+            }
+        },
         handler: function(request, reply) {
             const url = request.params.url,
                 md5Url = md5(url),
@@ -49,6 +55,12 @@ server.register(require('inert'), (err) => {
     server.route({
         method: 'GET',
         path: '/jsonp',
+        config: {
+            state: {
+                parse: false, // parse and store in request.state
+                failAction: 'ignore' // may also be 'ignore' or 'log'
+            }
+        },
         handler: function(request, reply) {
             const params = request.query,
                 json = {
@@ -91,6 +103,12 @@ server.register(require('inert'), (err) => {
     // mock data
     server.route({
         method: 'GET',
+        config: {
+            state: {
+                parse: false, // parse and store in request.state
+                failAction: 'ignore' // may also be 'ignore' or 'log'
+            }
+        },
         path: '/mock/{template}',
         handler: function(request, reply) {
             const template = request.params.template;
@@ -102,6 +120,12 @@ server.register(require('inert'), (err) => {
     server.route({
         method: 'POST',
         path: '/mock',
+        config: {
+            state: {
+                parse: false, // parse and store in request.state
+                failAction: 'ignore' // may also be 'ignore' or 'log'
+            }
+        },
         handler: function(request, reply) {
             const params = request.payload;
             if (params && params.template) {

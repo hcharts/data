@@ -106,9 +106,9 @@ server.register(require('inert'), (err) => {
             const params = request.payload;
             if (params && params.template) {
                 const data = Mock.mock(JSON.parse(params.template));
-                reply(JSON.stringify(data)).type('application/json');
+                reply(JSON.stringify(data)).type('application/json').header('Access-Control-Allow-Origin', '*');
             } else {
-                reply('{code: 0, msg: "参数错误"}').type('application/json');
+                reply('{code: 0, msg: "参数错误"}').type('application/json').header('Access-Control-Allow-Origin', '*');
             }
         }
     });

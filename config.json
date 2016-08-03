@@ -1,0 +1,5 @@
+{
+    "port": 3002,
+    "qrcode": "./qrcode/",
+    "datas": "./datas/"
+}

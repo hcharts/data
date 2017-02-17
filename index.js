@@ -62,7 +62,7 @@ server.register(require('inert'), (err) => {
             }
         },
         handler: function(request, reply) {
-            const params = request.query,
+            var params = request.query,
                 json = {
                     code: 1,
                     msg: '参数错误'
@@ -80,11 +80,12 @@ server.register(require('inert'), (err) => {
             if (params.filename) {
 
                 if (/^[a-zA-Z]+[a-zA-Z\d\-\_\.\/]+\.json$/.test(params.filename)) {
+		    console.log(config.datas + params.filename);
                     json = fs.readFileSync(config.datas + params.filename).toString();
                 } else if (/^[a-zA-Z]+[a-zA-Z\d\-\_\.\/]+\.csv$/.test(params.filename)) {
-                    json = fs.readFileSync(config.datas + params.filename).toString();
+                    json = (fs.readFileSync(config.datas + params.filename)).toString();
                     // replace all
-                    json = json.replace(/\"/g, '\"');
+                    json = json.replace(/\"/g, '\\"');
                     json = json.replace(/[\r\n]+/g, '\\n');
                     json = '"' + json + '"';
                 }
